@@ -43,7 +43,7 @@ class Supplier(models.Model):
     number = models.CharField(max_length=20)
     city = models.CharField(max_length=255)
     state = models.CharField(max_length=2, choices=STATE_CHOICES)
-    PHONE = models.CharField(max_length=20)
+    phone = models.CharField(max_length=20)
     enabled = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
