@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'suppliers.apps.SuppliersConfig'
+    'suppliers.apps.SuppliersConfig',
+    'products.apps.ProductsConfig'
 ]
 
 MIDDLEWARE = [
@@ -57,7 +58,8 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             BASE_DIR / 'base' / 'templates',
-            BASE_DIR / 'suppliers' / 'templates'
+            BASE_DIR / 'suppliers' / 'templates',
+            BASE_DIR / 'products' / 'templates'
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -130,5 +132,10 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Messages config
-
 MESSAGE_STORAGE = "django.contrib.messages.storage.cookie.CookieStorage"
+
+
+# File config
+MEDIA_ROOT = BASE_DIR / 'media'
+
+MEDIA_URL = 'media/'

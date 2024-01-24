@@ -2,7 +2,7 @@ jQuery(function() {
     const $enabledCheckbox = $(".form-check-input")
 
     $enabledCheckbox.on("click", function(){
-        const url = $(this).data("url");
+        const url = $(this).data("url")
 
         fetch(url, {
             method: "POST",
@@ -12,6 +12,6 @@ jQuery(function() {
         })
         .then(res => res.json())
         .then(data => console.log(data))
-        .catch(console.error);
+        .catch(console.error)
     })
-});
+})
