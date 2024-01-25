@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block title %}Cadastro de produtos{% endblock  %}
+{% block title %}Cadastro de categorias{% endblock  %}
 {% block head %}
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 {% endblock  %}
 {% block content %}
-    {% with create_url="/produtos/cadastro" %}
+    {% with create_url="/categorias/cadastro" %}
         <h2 class="mb-3">
             {% if form_action == create_url %}
-            Cadastro de produtos
+            Cadastro de categorias
           {% else %}
-            Edição de produtos
+            Edição de categorias
           {% endif %}</h2>
         <form action="{{ form_action }}" method="POST" novalidate enctype="multipart/form-data">
             {% csrf_token %}
@@ -26,23 +26,6 @@
                 <div class="col">
                     {{ form.description|as_crispy_field }}
                 </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    {{ form.category|as_crispy_field }}
-                </div>
-                <div class="col-md-4">
-                    {{ form.sale_price|as_crispy_field }}
-                </div>
-                <div class="col-md-4">
-                    {{ form.expiration_date|as_crispy_field }}
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col">
-                    {{ form.photo|as_crispy_field }}
-                </div>
-            </div>
             <div class="d-grid">
                 <button class="btn btn-primary btn-lg">Salvar</button>
             </div>

@@ -6,6 +6,18 @@ from django.core.files.base import ContentFile
 from io import BytesIO
 
 # Create your models here.
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Categoria"
+        verbose_name_plural = "Categorias"
+
 class Product(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -16,6 +28,7 @@ class Product(models.Model):
     photo = models.ImageField(upload_to="product-images", blank=True, null=True)
     thumbnail = models.ImageField(upload_to="thumbnails", blank=True, null=True)
     enabled = models.BooleanField(default=True)
+    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -23,8 +36,16 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         self.__update_is_perishable()
-        super(Product, self).save(*args, **kwargs)
 
+        if self.pk:
+            old_obj = Product.objects.filter(pk=self.pk).first()
+            if old_obj and old_obj.photo != self.photo:
+                self.__delete_file_if_exists(old_obj.photo)
+            if old_obj and old_obj.thumbnail:
+                self.__delete_file_if_exists(old_obj.thumbnail)
+        
+        super(Product, self).save(*args, **kwargs)
+        
         self.__create_thumbnail()
         super(Product, self).save(*args, **kwargs)
 

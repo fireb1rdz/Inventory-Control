@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product
+from .models import Product, Category
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
 from django.db.models import Q 
 from django.http import JsonResponse
 from django.urls import reverse
-from .forms import ProductForm
+from .forms import ProductForm, CategoryForm
 from django.contrib import messages
 
 # Create your views here.
@@ -32,7 +32,7 @@ def search(request):
     # Filtrando os produtos
     #  O Q é usado para combinar filtros (& ou |)
     products = Product.objects\
-        .filter(name__icontains=search_value) \
+        .filter(Q(name__icontains=search_value) | Q(category__name__icontains=search_value))\
         .order_by("-id")
 
     paginator = Paginator(products, 100)
@@ -41,21 +41,21 @@ def search(request):
 
     context = { "products": page_obj}
 
-    return render(request, "products/index.html")
+    return render(request, "products/index.html", context)
 
 def create(request):
     form_action = reverse("products:create")
     # POST
 
     if request.method == "POST":
-        form = ProductForm(request.POST)
+        form = ProductForm(request.POST, request.FILES)
 
         if form.is_valid():
             form.save()
-            messages.success(request, "O fornecedor foi cadastrado com sucesso!")
+            messages.success(request, "O produto foi cadastrado com sucesso!")
             return redirect("products:index")
         
-        messages.error(request, "Falha ao cadastrar o fornecedor. Verifique o preenchimento dos campos.")
+        messages.error(request, "Falha ao cadastrar o produto. Verifique o preenchimento dos campos.")
         
         context = { "form": form, "form_action": form_action}
 
@@ -69,15 +69,17 @@ def create(request):
     return render(request, "products/create.html", context)
 
 def update(request, slug):
-    supplier = get_object_or_404(Product, slug=slug)
+    product = get_object_or_404(Product, slug=slug)
     form_action = reverse("products:update", args=(slug,))
 
     # POST
     if request.method == "POST":
-        form = ProductForm(request.POST, instance=supplier)
+        form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
+            if form.cleaned_data["photo"] is False:
+                product.thumbnail.delete()
             form.save()
-            messages.success(request, "Fornecedor atualizado com sucesso!")
+            messages.success(request, "Produto atualizado com sucesso!")
             return redirect("products:index")
         
         context = {
@@ -88,7 +90,7 @@ def update(request, slug):
         return render(request, "products/create.html", context)
     
     # GET
-    form =  ProductForm(instance=supplier)
+    form =  ProductForm(instance=product)
 
     context = {
         "form_action": form_action,
@@ -112,4 +114,46 @@ def toggle_enabled(request, id):
     supplier.save()
     
     return JsonResponse({ "message": "sucess" })
+
+def create_category(request):
+    form_action = reverse("products:create_category")
     
+    # POST
+    if request.method == "POST":
+        form = CategoryForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "A categoria foi cadastrada com sucesso!")
+            return redirect("products:index")
+        
+        messages.error(request, "Falha ao cadastrar o produto. Verifique o preenchimento dos campos.")
+
+        context = {
+            "form_action": form_action,
+            "form": form,
+        }
+
+        return render(request, "categories/create.html", context)
+    
+    form = CategoryForm()
+
+    context = {
+        "form_action": form_action,
+        "form": form
+    }
+
+    return render(request, "categories/create.html", context)
+
+def index_category(request):
+    categories = Category.objects.order_by("-id")
+
+    paginator = Paginator(categories, 100)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "categories": page_obj
+    }
+
+    return render(request, "categories/index.html", context)

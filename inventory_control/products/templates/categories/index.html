@@ -1,29 +1,27 @@
 {% extends "base.html" %}
 {% load static %}
 {% block head %}
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-    <script src="{% static 'base/js/index.js' %}"></script>
 {% endblock  %}
-{% block title %}Produtos{% endblock  %}
+{% block title %}Categorias{% endblock  %}
 {% block content %}
-    <h2 class="mb-3">Produtos</h2>
+    <h2 class="mb-3">Categorias</h2>
     
     <a 
-    href="{% url 'products:create' %}"
-    title="Cadastrar novo produto"
+    href="{% url 'products:create_category' %}"
+    title="Cadastrar nova categoria"
     class="btn btn-primary btn-sticky-bottom">
     <i class="bi bi-plus"></i>
     </a>
 
     {% comment %} Filtro {% endcomment %}
-    <form method="get" action="{% url 'products:search' %}" class="row mb-3">
+    {% comment %} <form method="get" action="{% url 'products:search' %}" class="row mb-3">
         <div class="col">
             <input value="{{ request.GET.q }}" class="form-control" type="text" name="q" placeholder="Buscar">
         </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-primary">Buscar</button>
         </div>
-    </form>
+    </form> {% endcomment %}
 
 {% comment %} Tabela de produtos {% endcomment %}
     <div class="table-responsive">
@@ -32,52 +30,20 @@
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
-                    <th>Categoria</th>
                     <th>Descrição</th>
-                    <th>Preço de venda</th>
-                    <th>É perecível</th>
-                    <th>Data de expiração</th>
-                    <th>Foto</th>
-                    <th>Ativo</th>
                 </tr>
             </thead>
             <tbody>
-                {% for product in products %}
+                {% for category in categories %}
                 <tr>
-                    <td>{{ product.id }}</td>
-                    <td>{{ product.name|title|truncatechars:20 }}</td>
-                    <td>{{ product.category.name|title|default:"Sem categoria" }}</td>
-                    <td>{{ product.description }}</td>
-                    <td>R$ {{ product.sale_price }}</td>
-                    <td> 
-                        {% if product.is_perishable %}
-                        Sim
-                        {% else %}
-                        Não
-                        {% endif %}
-                    </td>
-                    <td> 
-                        {% if product.expiration_date %}
-                        {{ product.expiration_date|date:"d/m/Y" }}
-                        {% else %}
-                        Não perecível
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if product.thumbnail %}
-                        <img src="{{ product.thumbnail.url }}" class="img-fluid" alt="{{ product.name }}">
-                        {% else %}
-                        Sem foto
-                        {% endif %}
-                    </td>
-                    <td>
-                        <input type="checkbox" class="form-check-input" {% if product.enabled %}checked{% endif %} data-url={% url 'products:toggle_enabled' product.id %}>
-                    </td>
+                    <td>{{ category.id }}</td>
+                    <td>{{ category.name|title|truncatechars:20 }}</td>
+                    <td>{{ category.description }}</td>
                     <td class="d-flex gap-1">
-                        <a href="{% url 'products:update' product.slug %}" class="btn btn-warning btn-sm" title="Editar produto">
+                        {% comment %} <a href="{% url 'products:update' category.slug %}" class="btn btn-warning btn-sm" title="Editar produto"> {% endcomment %}
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <form method="post" action="{% url 'products:delete' product.id %}">
+                        {% comment %} <form method="post" action="{% url 'products:delete' category.id %}"> {% endcomment %}
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm" title="Remover fornecedor">
                                 <i class="bi bi-trash"></i>
