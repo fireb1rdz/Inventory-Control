@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.urls import reverse
 from .forms import ProductForm, CategoryForm
 from django.contrib import messages
+from .forms import SupplierProductFormSet
 
 # Create your views here.
 def index(request):
@@ -46,25 +47,47 @@ def search(request):
 def create(request):
     form_action = reverse("products:create")
     # POST
-
-    if request.method == "POST":
+    if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
-
-        if form.is_valid():
-            form.save()
-            messages.success(request, "O produto foi cadastrado com sucesso!")
-            return redirect("products:index")
         
+        if form.is_valid():
+            product = form.save()
+            
+            supplier_product_formset = SupplierProductFormSet(request.POST, instance=product)
+            
+            if supplier_product_formset.is_valid():
+                supplier_product_formset.save()                            
+                messages.success(request, "O produto foi cadastrado com sucesso!")
+            else:
+                messages.error(request, "Falha ao cadastrar os fornecedores do produto")
+                product.delete()
+                
+                supplier_product_formset = SupplierProductFormSet(request.POST)
+        
+                context = { "form": form, "supplier_product_formset": supplier_product_formset, "form_action": form_action }
+                
+                return render(request, "products/create.html", context)
+                
+            
+            return redirect("products:index")
+                
         messages.error(request, "Falha ao cadastrar o produto. Verifique o preenchimento dos campos.")
         
-        context = { "form": form, "form_action": form_action}
-
+        supplier_product_formset = SupplierProductFormSet(request.POST)
+        
+        context = { "form": form, "supplier_product_formset": supplier_product_formset, "form_action": form_action }
+        
         return render(request, "products/create.html", context)
 
     # GET
     form = ProductForm()
+    supplier_product_formset = SupplierProductFormSet()
 
-    context = {"form": form, "form_action": form_action}
+    context = {
+        "form": form, 
+        "form_action": form_action,
+        "supplier_product_formset": supplier_product_formset
+        }
 
     return render(request, "products/create.html", context)
 
@@ -113,7 +136,42 @@ def toggle_enabled(request, id):
     supplier.enabled = not supplier.enabled
     supplier.save()
     
-    return JsonResponse({ "message": "sucess" })
+    return JsonResponse({ "message": "success" })
+
+def index_category(request):
+    categories = Category.objects.order_by("-id")
+
+    paginator = Paginator(categories, 100)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "categories": page_obj
+    }
+
+    return render(request, "categories/index.html", context)
+
+def search_category(request):
+    # Obtendo o valor da requisição (Formulário)
+    search_value = request.GET.get("q").strip()
+
+    # Verificando se algo foi digitado
+    if not search_value:
+        return redirect("products:index_category")
+    
+    # Filtrando os produtos
+    #  O Q é usado para combinar filtros (& ou |)
+    products = Category.objects\
+        .filter(Q(name__icontains=search_value) | Q(category__name__icontains=search_value))\
+        .order_by("-id")
+
+    paginator = Paginator(products, 100)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    context = { "products": page_obj}
+
+    return render(request, "categories/index.html", context)
 
 def create_category(request):
     form_action = reverse("products:create_category")
@@ -145,15 +203,36 @@ def create_category(request):
 
     return render(request, "categories/create.html", context)
 
-def index_category(request):
-    categories = Category.objects.order_by("-id")
+def update_category(request, slug):
+    category = get_object_or_404(Category, slug=slug)
 
-    paginator = Paginator(categories, 100)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    # POST
+    if request.method == "POST":
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Categoria atualizada com sucesso!")
+            return redirect("products:index_category")
+        
+        context = {
+            "form": form
+        }
+
+        return render(request, "category/create.html", context)
+    
+    # GET
+    form =  CategoryForm(instance=category)
 
     context = {
-        "categories": page_obj
+        "form": form
     }
 
-    return render(request, "categories/index.html", context)
+    return render(request, "categories/create.html", context)
+
+@require_POST
+def delete_category(request, id):
+    supplier = get_object_or_404(Category, pk=id)
+    supplier.delete()
+
+    return redirect("products:index_category")
+

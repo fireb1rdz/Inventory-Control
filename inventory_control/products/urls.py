@@ -9,7 +9,10 @@ urlpatterns = [
     path("search", views.search, name="search"),
     path("<int:id>/toggle_enabled", views.toggle_enabled, name="toggle_enabled"),
     path("<slug:slug>", views.update, name="update"),
-    path("categorias/index", views.index_category, name="index_category"),
-    path("categorias/cadastro", views.create_category, name="create_category")
+    path("categorias/", views.index_category, name="index_category"),
+    path("categorias/cadastro", views.create_category, name="create_category"),
+    path("categories/<int:id>/delete", views.delete_category, name="delete_category"),
+    path("categories/search", views.search_category, name="search_category"),
+    path("categorias/<slug:slug>/", views.update_category, name="update_category"),
 ]
 

@@ -14,14 +14,14 @@
     </a>
 
     {% comment %} Filtro {% endcomment %}
-    {% comment %} <form method="get" action="{% url 'products:search' %}" class="row mb-3">
+    <form method="get" action="{% url 'products:search_category' %}" class="row mb-3">
         <div class="col">
             <input value="{{ request.GET.q }}" class="form-control" type="text" name="q" placeholder="Buscar">
         </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-primary">Buscar</button>
         </div>
-    </form> {% endcomment %}
+    </form>
 
 {% comment %} Tabela de produtos {% endcomment %}
     <div class="table-responsive">
@@ -40,12 +40,12 @@
                     <td>{{ category.name|title|truncatechars:20 }}</td>
                     <td>{{ category.description }}</td>
                     <td class="d-flex gap-1">
-                        {% comment %} <a href="{% url 'products:update' category.slug %}" class="btn btn-warning btn-sm" title="Editar produto"> {% endcomment %}
+                        <a href="{% url 'products:update_category' category.slug %}" class="btn btn-warning btn-sm" title="Editar categoria">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        {% comment %} <form method="post" action="{% url 'products:delete' category.id %}"> {% endcomment %}
+                        <form method="post" action="{% url 'products:delete_category' category.id %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm" title="Remover fornecedor">
+                            <button type="submit" class="btn btn-danger btn-sm" title="Remover categoria">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </form>
