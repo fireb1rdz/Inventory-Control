@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, Category
+from .models import Product, Category, SupplierProduct
 from django.core.paginator import Paginator
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from django.db.models import Q 
 from django.http import JsonResponse
 from django.urls import reverse
@@ -236,3 +236,15 @@ def delete_category(request, id):
 
     return redirect("products:index_category")
 
+@require_GET
+def get_suppliers_from_product(request, id):
+    suppliers = SupplierProduct.objects.filter(product__id=id).order_by("-id")
+
+    # Serialização
+    suppliers_serialized = [{
+        "id": supplierProduct.id,
+        "name": supplierProduct.supplier.fantasy_name,
+        "cost_price": supplierProduct.cost_price
+    } for supplierProduct in suppliers] 
+
+    return JsonResponse(suppliers_serialized, safe=False)

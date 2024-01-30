@@ -4,7 +4,7 @@ jQuery(function () {
     const $streetInput = $("#streetInput");
     const $numberInput = $("#numberInput");
     const $cityInput = $("#cityInput");
-    const $stateInput = $("#stateInput");
+    const $stateInput = $("#stateSelect");
     const $cnpjInput = $("#cnpjInput");
     const $phoneInput = $("#phoneInput");
     const $zipcodeIcon = $("#zipcodeIcon");
@@ -40,86 +40,5 @@ jQuery(function () {
             })
             .catch(() => console.error("Falha ao realizar a requisição para a API do VIACEP"))
             .finally(() => $zipcodeIcon.attr("class", "bi bi-geo-alt"));
-    });
-
-    // Acrescentando as validações para o formulário: https://jqueryvalidation.org/validate/
-    $form.validate({
-        errorElement: "div", // Elemento que será criado
-        errorClass: "invalid-feedback", // Classe que será aplicada
-        // Como os campos com erro irão se comportar
-        highlight: (element, _, validClass) => {
-            $(element).addClass("is-invalid");
-        },
-        // Como os campos sem erro irão se comportar
-        unhighlight: (element) => {
-            $(element).removeClass("is-invalid");
-        },
-        // Onde a mensagem de erro será adicionada
-        errorPlacement: (error, element) => {
-            error.addClass("invalid-feedback");
-            if (element.prop("id") === "zipcodeInput") { // Caso seja o campo do CEP
-                error.insertAfter(element.next()); // Inserir depois do ícone
-            } else {
-                error.insertAfter(element);
-            }
-        },
-        // Validações que serão aplicadas
-        rules: {
-            company_name: {
-                required: true,
-            },
-            fantasy_name: {
-                required: true,
-            },
-            phone: {
-                required: true,
-            },
-            representative: {
-                required: true,
-                minlength: 3,
-            },
-            cnpj: {
-                required: true,
-            },
-            email: {
-                required: true,
-                email: true,
-            },
-            zipcode: {
-                required: true,
-            },
-            street: {
-                required: true,
-            },
-            number: {
-                required: true,
-            },
-            city: {
-                required: true,
-            },
-            state: {
-                required: true,
-            },
-        },
-        // Mensagens que serão exibidas de acordo com os erros
-        messages: {
-            company_name: "Por favor, informe a razão social",
-            representative: "Por favor, informe o nome do representante",
-            fantasy_name: "Por favor, informe o nome fantasia",
-            phone: "Por favor, informe o telefone",
-            name: {
-                required: "Por favor, insira o nome do representante",
-                minlength: "O nome do representante deve ter no mínimo 3 caracteres",
-            },
-            cnpj: {
-                required: "Por favor, insira um CNPJ",
-            },
-            email: "Por favor, insira um endereço de e-mail válido",
-            zipcode: "Por favor, insira um CEP válido",
-            street: "Por favor, insira um endereço válido",
-            number: "Por favor, insira um número válido",
-            city: "Por favor, insira uma cidade",
-            state: "Por favor, insira um estado"
-        },
     });
 });
