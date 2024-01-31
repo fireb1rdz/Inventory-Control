@@ -12,3 +12,4 @@ def format_phone(value):
         return "({}) {} {}-{}".format(*match.groups())
     
     return value
+

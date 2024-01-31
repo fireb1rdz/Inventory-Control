@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Category, SupplierProduct
+from .models import Product, Category, SupplierProduct, ProductInventory
 
 # Register your models here.
 @admin.register(Product)
@@ -26,3 +26,12 @@ class SupplierProductAdmin(admin.ModelAdmin):
     search_fields = ["product"]
     list_per_page = 100
     list_max_show_all = 1000
+
+@admin.register(ProductInventory)
+class ProductInventoryAdmin(admin.ModelAdmin):
+    list_display = ["product", "quantity", "local"]
+    search_fields = ["product"]
+    list_per_page = 100
+    list_max_show_all = 1000
+
+

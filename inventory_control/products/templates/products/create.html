@@ -63,6 +63,32 @@
                     </div>
                     <div class="col-md-2">
                         <div class="d-grid">
+                            <button 
+                            {% if supplier.id.value %}data-url="{% url "products:delete_supplier" supplier.id.value %}"{% endif %}
+                            type="button" 
+                            class="btn btn-danger remove-btn">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <h3>Estoque</h3>
+            <div id="productInventoryFormset">
+                {{ product_inventory_formset.management_form }}
+                {% for product in product_inventory_formset %}
+                <div class="row mb-3">
+                    {{ form.id }}
+                    <div class="col-md-5">
+                        {{ product.quantity|as_crispy_field }}
+                    </div>
+                    <div class="col-md-5">
+                        {{ product.local|as_crispy_field }}
+                    </div>
+                    <div class="col-md-2">
+                        <div class="d-grid">
                             <button type="button" class="btn btn-danger remove-btn">
                                 <i class="bi bi-x"></i>
                             </button>

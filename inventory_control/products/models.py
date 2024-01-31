@@ -106,3 +106,16 @@ class SupplierProduct(models.Model):
         verbose_name = "Fornecedor do Produto"
         verbose_name_plural = "Fornecedores do Produto"
         unique_together = [["supplier", "product"]]
+
+class ProductInventory(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.DecimalField(max_digits=8, decimal_places=2)
+    local = models.CharField(max_length=255)
+    
+
+    def __str__(self):
+        return f"Produto: {self.product.name} | Quantidade: {self.quantity}"
+    class Meta:
+        verbose_name = "Inventário de produto"
+        verbose_name_plural = "Inventário de produtos"
+        unique_together = [["product", "local"]]

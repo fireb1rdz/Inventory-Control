@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product, Category, SupplierProduct
+from .models import Product, Category, SupplierProduct, ProductInventory
 import re
 from crispy_forms.helper import FormHelper
 
@@ -75,4 +75,27 @@ SupplierProductFormSet = forms.inlineformset_factory(
     extra=1,
     can_delete=True,
     max_num=5
+)
+
+class ProductInventoryForm(forms.ModelForm):
+    class Meta:
+        model = ProductInventory
+        exclude = ["product"]
+        widgets = {
+            "quantity": forms.NumberInput(attrs={"placeholder": "Quantidade"}),
+            "local": forms.TextInput(attrs={"placeholder": "Local"})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_show_labels = False
+
+ProductInventoryFormSet = forms.inlineformset_factory(
+    Product,
+    ProductInventory,
+    form=ProductInventoryForm,
+    extra=1,
+    can_delete=False,
+    max_num = 1
 )

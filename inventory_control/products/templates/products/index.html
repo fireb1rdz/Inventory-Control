@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load quantity_filter %}
 {% block head %}
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <script src="{% static 'base/js/index.js' %}"></script>
@@ -63,6 +64,7 @@
                     <th>Nome</th>
                     <th>Categoria</th>
                     <th>Descrição</th>
+                    <th>Quantidade em estoque</th>
                     <th>Preço de venda</th>
                     <th>É perecível</th>
                     <th>Data de expiração</th>
@@ -77,6 +79,13 @@
                     <td>{{ product.name|title|truncatechars:20 }}</td>
                     <td>{{ product.category.name|title|default:"Sem categoria" }}</td>
                     <td>{{ product.description }}</td>
+                    <td>
+                        {% for inventory in product_inventory %}
+                        {% if product == inventory.product %}
+                        {{ inventory.quantity|quantity_filter }}
+                        {% endif %}
+                        {% endfor %}
+                    </td>
                     <td>R$ {{ product.sale_price }}</td>
                     <td> 
                         {% if product.is_perishable %}
@@ -119,7 +128,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="9" class="text=center">Nenhum produto cadastrado</td>
+                    <td colspan="10" class="text=center">Nenhum produto cadastrado</td>
                 </tr>
                 {% endfor %}
             </tbody>
