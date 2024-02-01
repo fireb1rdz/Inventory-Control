@@ -59,7 +59,6 @@ def delete(request, id):
 
     return redirect("users:index")
 
-@login_required
 def login(request):
     form = AuthenticationForm(request)
     next = request.GET.get("next")

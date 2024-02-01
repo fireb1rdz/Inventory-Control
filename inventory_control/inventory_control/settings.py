@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'suppliers.apps.SuppliersConfig',
     'products.apps.ProductsConfig',
     'users.apps.UsersConfig',
-    'transactions.apps.TransactionsConfig'
+    'transactions.apps.TransactionsConfig',
     'crispy_forms',
     'crispy_bootstrap5',
 ]
