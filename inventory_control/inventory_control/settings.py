@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'suppliers.apps.SuppliersConfig',
     'products.apps.ProductsConfig',
     'users.apps.UsersConfig',
+    'transactions.apps.TransactionsConfig'
     'crispy_forms',
     'crispy_bootstrap5',
 ]
@@ -62,7 +63,8 @@ TEMPLATES = [
         'DIRS': [
             BASE_DIR / 'base' / 'templates',
             BASE_DIR / 'suppliers' / 'templates',
-            BASE_DIR / 'products' / 'templates'
+            BASE_DIR / 'products' / 'templates',
+            BASE_DIR / 'transactions' / 'templates'
         ],
         'APP_DIRS': True,
         'OPTIONS': {

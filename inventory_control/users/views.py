@@ -17,6 +17,7 @@ def index(request):
 
     return render(request, "users/index.html", context)
 
+@login_required
 def create(request):
     form_action = reverse("users:create")
     
@@ -46,9 +47,11 @@ def create(request):
     }
     return render(request, "users/create.html", context)
 
+@login_required
 def update(request):
     return render(request, "users/create.html")
 
+@login_required
 def delete(request, id):
     user = get_object_or_404(User, id=id)
 
@@ -56,6 +59,7 @@ def delete(request, id):
 
     return redirect("users:index")
 
+@login_required
 def login(request):
     form = AuthenticationForm(request)
     next = request.GET.get("next")
@@ -80,6 +84,7 @@ def login(request):
     }
     return render(request, "users/login.html", context)
 
+@login_required
 def logout(request):
     auth.logout(request)
 

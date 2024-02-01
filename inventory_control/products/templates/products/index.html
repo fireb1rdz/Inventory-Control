@@ -82,7 +82,7 @@
                     <td>
                         {% for inventory in product_inventory %}
                         {% if product == inventory.product %}
-                        {{ inventory.quantity|quantity_filter }}
+                        {{ inventory.quantity|format_quantity }}
                         {% endif %}
                         {% endfor %}
                     </td>
