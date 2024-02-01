@@ -20,7 +20,7 @@
                         <form action="{% url 'users:login' %}" method="POST">
                             {% csrf_token %}
                             {{ form | crispy }}
-                            <input type="hidden" name="next" value={{ next|default_if_none:"" }}>
+                            <input type="hidden" name="next" value={{ next }}>
                             <button type="submit" class="btn btn-primary">Entrar</button>
                         </form>
                     </div>
