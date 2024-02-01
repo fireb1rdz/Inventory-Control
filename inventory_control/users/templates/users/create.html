@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Usuários{% endblock  %}
+{% block content %}
+    {% with create_url="/usuarios/cadastro/" %}
+        {% if create_url == form_action %}
+        <h2 class="mb-3">Cadastro de usuários</h2>
+        {% else %}
+        <h2 class="mb-3">Edição de usuários</h2>
+        {% endif %}
+        <form action="{{ form_action }}" method="POST">
+            {% csrf_token %}
+            
+            {{ form | crispy }}
+
+            <div class="d-grid">
+                <button class="btn btn-primary btn-lg">Salvar</button>
+            </div>
+        </form>
+    {% endwith %}
+{% endblock  %}
