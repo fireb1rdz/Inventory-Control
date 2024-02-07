@@ -183,17 +183,17 @@ def update(request, slug):
 
 @require_POST
 def delete(request, id):
-    supplier = get_object_or_404(Product, pk=id)
-    supplier.delete()
+    product = get_object_or_404(Product, pk=id)
+    product.delete()
 
     return redirect("products:index")
 
 @require_POST
 def toggle_enabled(request, id):
-    supplier = get_object_or_404(Product, pk=id)
+    product = get_object_or_404(Product, pk=id)
 
-    supplier.enabled = not supplier.enabled
-    supplier.save()
+    product.enabled = not product.enabled
+    product.save()
     
     return JsonResponse({ "message": "success" })
 

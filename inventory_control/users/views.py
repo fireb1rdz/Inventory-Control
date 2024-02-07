@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView, LogoutView
 
 @login_required
 def index(request):
@@ -59,33 +60,10 @@ def delete(request, id):
 
     return redirect("users:index")
 
-def login(request):
-    form = AuthenticationForm(request)
-    next = request.GET.get("next")
-    
-    # POST
-    if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
+class UserLoginView(LoginView):
+    template_name = "users/login.html"
+    redirect_authenticated_user = True
+    next_page = "products:index"
 
-        next = request.POST.get("next")
-
-        if form.is_valid():
-            user = form.get_user()
-            auth.login(request, user)
-
-            return redirect(next) if next else redirect("products:index")
-    
-    # GET
-
-    context = {
-        "form": form,
-        "next": next
-    }
-
-    return render(request, "users/login.html", context)
-
-@login_required
-def logout(request):
-    auth.logout(request)
-
-    return redirect("users:login")
+class UserLogoutView(LogoutView):
+    next_page = "users:login"

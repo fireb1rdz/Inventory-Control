@@ -50,13 +50,6 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         self.__update_is_perishable()
-
-        if self.pk:
-            old_obj = Product.objects.filter(pk=self.pk).first()
-            if old_obj and old_obj.photo != self.photo:
-                self.__delete_file_if_exists(old_obj.photo)
-            if old_obj and old_obj.thumbnail:
-                self.__delete_file_if_exists(old_obj.thumbnail)
         
         super(Product, self).save(*args, **kwargs)
         
@@ -70,19 +63,17 @@ class Product(models.Model):
         if not self.photo:
             return
         
-        img = Image.open(self.photo.path) # Abrindo a imagem com o pillow
+        img = Image.open(self.photo) # Abrindo a imagem com o pillow
         size = (30, 30) # Definindo o tamanho do redimensionamento
         img.thumbnail(size) # Redimensionando a imagem
+        extension = f".{img.format.lower()}"
 
         # Salvando a imagem
         thumb_io = BytesIO()
         img.save(thumb_io, img.format, quality=85)
 
-        name, extension = os.path.splitext(self.photo.name) # [nome-arquivo, .jpeg]
-        thumb_filename = f"{name}_thumb{extension}"
-
         # Salvar a imagem na instância do produto
-        self.thumbnail.save(thumb_filename, ContentFile(thumb_io.getvalue()), save=False)
+        self.thumbnail.save(f"{self.slug}_thumb{extension}", ContentFile(thumb_io.getvalue()), save=False)
 
     def __delete_file_if_exists(self, file):
         if file and os.path.isfile(file.path):
