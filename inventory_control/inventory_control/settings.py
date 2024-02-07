@@ -29,9 +29,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -153,6 +153,7 @@ if env("ENV") == "production":
     STATICFILES_STORAGE = "inventory_control.storage_backends.StaticStorage"
 
     MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_MEDIA_LOCATION}"
+    DEFAULT_FILE_STORAGE = 'inventory_control.storage_backends.PublicMediaStorage'
 else:
     STATIC_URL = "static/"
 
