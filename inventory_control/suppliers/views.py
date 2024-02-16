@@ -20,7 +20,7 @@ class SupplierListView(LoginRequiredMixin, ListView):
 class SupplierSearchView(LoginRequiredMixin, ListView):
     model = Supplier
     template_name = "suppliers/index.html"
-    paginate_by = 1
+    paginate_by = 100
     
     def get_queryset(self):
         search_value = self.request.GET.get("q").strip()
